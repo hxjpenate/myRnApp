@@ -146,73 +146,145 @@
 //   }
 
 
-import React from "react";
-import { View, Text ,Button } from "react-native";
-import { createStackNavigator, createAppContainer } from "react-navigation";
+// import React from "react";
+// import { View, Text ,Button } from "react-native";
+// import { createStackNavigator, createAppContainer } from "react-navigation";
 
-//第一个
-class HomeScreen extends React.Component {
-  render() {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Home Screen</Text>
-        <Button
-          title="Go to Details"
-          onPress={() => this.props.navigation.navigate('Details',{
-            itemId:86,
-            otherParam:'anything you want here'
-          })}
-        />
-      </View>
-    );
-  }
-}
+// //第一个
+// class HomeScreen extends React.Component {
+//   // static navigationOptions = {
+//   //   title:'首页'
+//   // }
+//   static navigationOptions = ({navigation})=>{
+//          return{
+//            title:navigation.getParam('otherParam','这是测试默认')
+//          }
+//   }
+//   render() {
+//     return (
+//       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+//         <Text>Home Screen</Text>
+//         <Button
+//           title="Go to Details"
+//           onPress={() => this.props.navigation.navigate('Details',{
+//             itemId:86,
+//             // otherParam:'anything you want here'
+//           })}
+//         />
+//         <Button 
+//           title = '更新标题'
+//           onPress = {()=>this.props.navigation.setParams({otherParam:'更新'})}
+        
+//         />
+//       </View>
+//     );
+//   }
+// }
 
-//第二个
-class DetailsScreen extends React.Component {
-  render() {
-    const {navigation} = this.props;
-    const itemId  = navigation.getParam('itemId','NO-ID')
-    const otherParam = navigation.getParam('otherParam', 'some default value');
+// //第二个
+// class DetailsScreen extends React.Component {
+//   // static navigationOptions = {
+//   //   title :'详情'
+//   // }
+//   static navigationOptions = ({navigation})=>{
+//   return {
+//     title : navigation.getParam('otherParam','A Nested details screen')
+//   }
+//   }
+//   render() {
+//     const {navigation} = this.props;
+//     const itemId  = navigation.getParam('itemId','NO-ID')
+//     const otherParam = navigation.getParam('otherParam', 'some default value');
 
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Details Screen</Text>
-        <Text>itemId: {JSON.stringify(itemId)}</Text>
-        <Text>otherParam: {JSON.stringify(otherParam)}</Text>
-        <Button
-          title="Go to Details... again"
-          onPress={() =>
-            this.props.navigation.push('Details', {
-              itemId: Math.floor(Math.random() * 100),
-            })}
-        />
-        <Button
-          title="Go to Home"
-          onPress={() => this.props.navigation.navigate('Home')}
-        />
-        <Button
-          title="Go back"
-          onPress={() => this.props.navigation.goBack()}
-        />
-      </View>
-    );
-  }
-}
-const AppNavigator = createStackNavigator({
-       Home: HomeScreen,
-       Details: DetailsScreen
+//     return (
+//       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+//         <Text>Details Screen</Text>
+//         <Text>itemId: {JSON.stringify(itemId)}</Text>
+//         <Text>otherParam: {JSON.stringify(otherParam)}</Text>
+//         <Button
+//           title="Go to Details... again"
+//           onPress={() =>
+//             this.props.navigation.push('Details', {
+//               itemId: Math.floor(Math.random() * 100),
+//             })}
+//         />
+//         <Button
+//           title="Go to Home"
+//           onPress={() => this.props.navigation.navigate('Home')}
+//         />
+//         <Button
+//           title="Go back"
+//           onPress={() => this.props.navigation.goBack()}
+//         />
+//       </View>
+//     );
+//   }
+// }
+// const AppNavigator = createStackNavigator({
+//        Home: HomeScreen,
+//        Details: DetailsScreen
+// },
+// {
+//   initialRouteName: "Home"
+// }
+
+// );
+
+// const AppContainer = createAppContainer(AppNavigator);
+// export default class App extends React.Component {
+//   render() {
+//     return <AppContainer />;
+//   }
+// }
+
+
+//选项卡式的导航条
+import {createAppContainer,createBottomTabNavigator} from 'react-navigation'
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import React, { Component } from 'react';
+import TabHome from './src/screens/TabHome'
+import TabDetails from './src/screens/TabDetails'
+import TabFind  from './src/screens/TabFind'
+import UserCenter from './src/screens/UserCenter'
+const TabNavigator = createBottomTabNavigator(
+//tab标签
+  {
+  '首页': { screen: TabHome },
+  '发现':{screen: TabFind },
+  '设置': { screen: TabDetails },
+  '我的':{screen: UserCenter },
+
 },
+//配置
 {
-  initialRouteName: "Home"
+  defaultNavigationOptions: ({ navigation }) => ({
+    tabBarIcon: ({ focused, tintColor }) => {
+      const { routeName } = navigation.state;
+      let iconName;
+      switch(routeName){
+        case '首页':
+        iconName = `ios-home`;
+        break
+        case '设置':
+        iconName = `ios-settings`;
+        break
+        case '发现':
+        iconName = `ios-search`;
+        break
+        case '我的':
+        iconName = `ios-options`;
+        break
+      }
+      return <Ionicons name={iconName} size={25} color={tintColor} />;
+    },
+  }),
+  tabBarOptions: {
+    activeTintColor: 'tomato',
+    inactiveTintColor: 'gray',
+  },
 }
 
 );
 
-const AppContainer = createAppContainer(AppNavigator);
-export default class App extends React.Component {
-  render() {
-    return <AppContainer />;
-  }
-}
+export default createAppContainer(TabNavigator);
 
