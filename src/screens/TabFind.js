@@ -42,7 +42,6 @@ export default class TabFind extends Component {
         data={this.state.data}
         renderItem={this.renderMovie}
         style={styles.list}
-        key={Math.random()}
       />
     );
   }

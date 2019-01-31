@@ -2,10 +2,14 @@
 
   import React, { Component } from 'react';
   import Swiper from 'react-native-swiper';
-  import {AppRegistry, Image, View, Dimensions, Text, StyleSheet ,ScrollView} from 'react-native';
+  import {AppRegistry, Image, View, Dimensions, Text, StyleSheet ,ScrollView ,Button,Alert,TouchableOpacity} from 'react-native';
   const {ScreenWidth, ScreenHeight} = Dimensions.get('window');
-  
-  export default class TabHome extends React.Component {
+  import { createStackNavigator, createAppContainer } from "react-navigation";
+
+  import TabTestDetails from './TabTestDetails'
+
+//  export default 
+ class Home extends React.Component {
     constructor(props){
       super(props);
       this.state = {
@@ -34,11 +38,13 @@
         }
         this.state.items.push(item);
     }
-    this.setState({
+    setTimeout(()=>{
+      this.setState({
         isShow: true,
         items: this.state.items
     })
-}
+    },5000)
+  }
 
     render() {
       let H = 200;
@@ -77,16 +83,32 @@
                 this.state.num.map((item,index)=>{
                   return(
                     <View style={styles.container} key = {index}>
+                  {/* 图片设置点击事件 */}
+                    <TouchableOpacity 
+                     onPress={()=>{ 
+                      this.props.navigation.navigate('TabTestDetails')
+                      // this.props.navigation.push('Details')
+
+                      
+                    }}>
                     <Image
                       source={{uri:"http://img0.pclady.com.cn/pclady/pet/choice/cat/1701/6.jpg"}}
                       style={styles.thumbnail}
                     />
+                    </TouchableOpacity>
 
                     <View style={styles.rightContainer}>
                         <Text style={styles.title}>萌宠小猫</Text>
                         <Text style={styles.year}>猫，属于猫科动物，分家猫、野猫，是全世界家庭中较为广泛的宠物。家猫的祖先据推测是起源于古埃及的沙漠猫，波斯的波斯猫....</Text>           
                     </View>
 
+
+                    <Button
+                      onPress={() => {
+                        Alert.alert("你点击了按钮！");
+                      }}
+                      title="点我！"
+                    />
               </View>
                   )
                 })
@@ -96,11 +118,33 @@
           );
       }else {
           return(
-             <Text> 加载中。。。。。。。。</Text>
+            <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+            <Text>数据加载中...</Text>
+          </View>
           );
       }
   }
 }
+
+//在home中添加路由
+const AppNavigator = createStackNavigator({
+       Home: Home,
+       TabTestDetails: TabTestDetails
+},
+{
+  initialRouteName: "Home"
+})
+
+const AppContainer = createAppContainer(AppNavigator);
+ export default class TabHome extends Component {
+      render() {
+        return (
+           <AppContainer/>
+        );
+      }
+    }
+
+
 
 const styles = StyleSheet.create({
   container: {
